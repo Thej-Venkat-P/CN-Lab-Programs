@@ -21,10 +21,23 @@ set n5 [$ns node]  # Create a node object and assign it to the variable n5
 $n4 shape box  # Set the shape of node n4 to "box"
 
 $ns duplex-link $n0 $n4 1005Mb 1ms DropTail  # Create a duplex link between nodes n0 and n4 with a bandwidth of 1005Mb, delay of 1ms, and DropTail queue
+$ns queue-limit $n0 $n4 5  # Set the queue limit between nodes n0 and n4 to 5 packets
+
 $ns duplex-link $n1 $n4 50Mb 1ms DropTail  # Create a duplex link between nodes n1 and n4 with a bandwidth of 50Mb, delay of 1ms, and DropTail queue
+
 $ns duplex-link $n2 $n4 2000Mb 1ms DropTail  # Create a duplex link between nodes n2 and n4 with a bandwidth of 2000Mb, delay of 1ms, and DropTail queue
+$ns queue-limit $n2 $n4 3  # Set the queue limit between nodes n2 and n4 to 3 packets
+
 $ns duplex-link $n3 $n4 200Mb 1ms DropTail  # Create a duplex link between nodes n3 and n4 with a bandwidth of 200Mb, delay of 1ms, and DropTail queue
+
 $ns duplex-link $n4 $n5 1Mb 1ms DropTail  # Create a duplex link between nodes n4 and n5 with a bandwidth of 1Mb, delay of 1ms, and DropTail queue
+$ns queue-limit $n4 $n5 2  # Set the queue limit between nodes n4 and n5 to 2 packets
+
+
+# Ping means Packet Internet Groper, it is used to check the connectivity between two nodes
+# It sends ICMP (Internet Control Message Protocol) echo request packets to the target host and waits for an ICMP echo reply
+# If the target host is reachable, it sends an ICMP echo reply back to the source host
+# If the target host is not reachable, it sends an ICMP destination unreachable message back to the source host
 
 set p1 [new Agent/Ping]  # Create a new Ping agent object and assign it to the variable p1
 $ns attach-agent $n0 $p1  # Attach agent p1 to node n0
@@ -45,11 +58,7 @@ $ns attach-agent $n3 $p4  # Attach agent p4 to node n3
 set p5 [new Agent/Ping]  # Create a new Ping agent object and assign it to the variable p5
 $ns attach-agent $n5 $p5  # Attach agent p5 to node n5
 
-$ns queue-limit $n0 $n4 5  # Set the queue limit between nodes n0 and n4 to 5 packets
-$ns queue-limit $n2 $n4 3  # Set the queue limit between nodes n2 and n4 to 3 packets
-$ns queue-limit $n4 $n5 2  # Set the queue limit between nodes n4 and n5 to 2 packets
-
-Agent/Ping instproc recv {from rtt} {  # Define a method called "recv" for the Ping agent class
+Agent/Ping instproc recv {from rtt} {  # Define a method called "recv" for the Ping agent class, rtt is the round trip time
     $self instvar node_  # Access the "node_" instance variable of the agent object
     puts "node [$node_ id] received answer from $from with round trip time $rtt msec"  # Print a message indicating that a ping response was received
 }

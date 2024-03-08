@@ -39,6 +39,7 @@ set cbr0 [new Application/Traffic/CBR]		# Create a new CBR traffic application o
 $cbr0 set packetSize_ 500		# Set the packet size of 'cbr0' to 500 bytes
 $cbr0 set interval_ 0.005		# Set the interval between packets of 'cbr0' to 0.005 seconds
 $cbr0 attach-agent $udp0		# Attach the UDP agent 'udp0' to the CBR traffic application 'cbr0'
+# cbr full form is constant bit rate
 
 set udp1 [new Agent/UDP]		# Create a new UDP agent object and assign it to the variable 'udp1'
 $ns attach-agent $n1 $udp1		# Attach the UDP agent 'udp1' to node 'n1'
