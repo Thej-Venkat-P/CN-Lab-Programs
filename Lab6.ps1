@@ -7,7 +7,7 @@ and set multiple traffic nodes and plot congestion window for different source /
 
 
 # Create a new simulator object
-set ns [new Simulator]
+set ns [new Simulator] # ns full form is network simulator
 
 # Open a file for tracing
 set tf [open lab6.tr w]
@@ -40,6 +40,9 @@ $n5 label "dest1"
 
 # Create a LAN with the specified nodes and parameters
 $ns make-lan "$n0 $n1 $n2 $n3 $n4" 100Mb 100ms LL Queue/DropTail Mac/802_3
+# LL means link layer which is used to connect the nodes
+# 100Mb is the bandwidth of the link
+# 100ms is the delay of the link
 
 # Create a duplex link between n4 and n5
 $ns duplex-link $n4 $n5 1Mb 1ms DropTail
@@ -57,6 +60,8 @@ $ftp0 set interval_ 0.0001
 # Create TCP sink agent and attach it to n5
 set sink5 [new Agent/TCPSink]
 $ns attach-agent $n5 $sink5
+
+# Connect tcp0 to sink5
 $ns connect $tcp0 $sink5
 
 # Create another TCP agent and attach it to n2
@@ -119,8 +124,8 @@ $ns run
 BEGIN {
 }
 {
-if($6=="cwnd_") # don’t leave space after writing cwnd_
-    printf("%f\t%f\t\n",$1,$7); # $1 is time and $7 is cwnd which represents congestion window
+    if($6=="cwnd_") # don’t leave space after writing cwnd_ $6 represents the event
+        printf("%f\t%f\t\n",$1,$7); # $1 is time and $7 is cwnd which represents congestion window
 }
 END {
 }

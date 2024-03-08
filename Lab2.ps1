@@ -4,6 +4,8 @@
 2. Implement simple ESS and with transmitting nodes
 in wire-less LAN by simulation and determine the performance with respect to transmission of packets.
 '''
+# ESS (Extended Service Set) is a set of connected BSSs (Basic Service Sets) and integrated into an infrastructure network.
+# BSS (Basic Service Set) is a set of all stations that can communicate with each other.
 
 set ns [new Simulator]                # Create a new Simulator object and assign it to the variable 'ns'
 set tf [open lab2.tr w]               # Open a file named 'lab2.tr' in write mode and assign the file handle to the variable 'tf'
