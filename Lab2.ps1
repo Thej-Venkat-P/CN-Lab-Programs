@@ -15,20 +15,21 @@ $topo load_flatgrid 1000 1000         # Load a flat grid topology with dimension
 set nf [open lab2.nam w]               # Open a file named 'lab2.nam' in write mode and assign the file handle to the variable 'nf'
 $ns namtrace-all-wireless $nf 1000 1000  # Enable wireless tracing for all nodes in the simulator and redirect the output to the file 'lab2.nam'
 
-$ns node-config -adhocRouting DSDV \  # Configure the nodes in the simulator with the following parameters:
+$ns node-config \
+    -adhocRouting DSDV \        # Set the ad-hoc routing protocol to DSDV (Destination-Sequenced Distance-Vector Routing), ad-hoc routing means that the nodes are connected in a decentralized manner
     -llType LL \                      #   - Link layer type: LL (Link Layer)
     -macType Mac/802_11 \             #   - MAC layer type: Mac/802_11 (802.11 Wireless MAC)
     -ifqType Queue/DropTail \          #   - Interface queue type: Queue/DropTail (DropTail Queue)
     -ifqLen 50 \                      #   - Interface queue length: 50
     -phyType Phy/WirelessPhy \         #   - Physical layer type: Phy/WirelessPhy (Wireless Physical Layer)
     -channelType Channel/WirelessChannel \  #   - Channel type: Channel/WirelessChannel (Wireless Channel)
-    -propType Propagation/TwoRayGround \     #   - Propagation type: Propagation/TwoRayGround (Two-Ray Ground Propagation)
+    -propType Propagation/TwoRayGround \     #   - Propagation type: Propagation/TwoRayGround (Two-Ray Ground Propagation) which means the signal is transmitted from one node to another node
     -antType Antenna/OmniAntenna \     #   - Antenna type: Antenna/OmniAntenna (Omni-directional Antenna)
     -topoInstance $topo \             #   - Topology instance: 'topo' object created earlier
     -agentTrace ON \                  #   - Enable agent tracing
     -routerTrace ON                   #   - Enable router tracing
 
-create-god 3                          # Create a God object with 3 nodes. God is a helper object that keeps track of the state of the network and provides a way to query the state of the network.
+create-god 3                          # god is a special agent that is used to monitor the network and perform various functions such as packet forwarding, routing, and broadcasting
 set n0 [$ns node]                     # Create a new node and assign it to the variable 'n0'
 set n1 [$ns node]                     # Create a new node and assign it to the variable 'n1'
 set n2 [$ns node]                     # Create a new node and assign it to the variable 'n2'
@@ -45,6 +46,7 @@ $n2 set X_ 600                        # Set the X coordinate of node 'n2' to 600
 $n2 set Y_ 600                        # Set the Y coordinate of node 'n2' to 600
 $n2 set Z_ 0                          # Set the Z coordinate of node 'n2' to 0
 
+# Setting the destinations so that the nodes move to their respective positions
 $ns at 0.1 "$n0 setdest 50 50 15"      # Schedule an event at time 0.1 to set the destination of node 'n0' to (50, 50, 15)
 $ns at 0.1 "$n1 setdest 100 100 25"    # Schedule an event at time 0.1 to set the destination of node 'n1' to (100, 100, 25)
 $ns at 0.1 "$n2 setdest 600 600 25"    # Schedule an event at time 0.1 to set the destination of node 'n2' to (600, 600, 25)
@@ -94,12 +96,12 @@ BEGIN {
     time2 = 0;   # Initialize a variable 'time2' to 0
 }
 {
-    if ($1 == "r" && $3 == "_1_" && $4 == "AGT") {  # $1 is the type of the packet, $3 is the source node, and $4 is the packet type (AGT for application data packet)
+    if ($1 == "r" && $3 == "_1_" && $4 == "AGT") {  # $1 is the type of the packet, $3 is the destination node, and $4 is the packet type (AGT for Agent Trace)
         count1++ ;  # Increment the value of 'count1' by 1
         pack1 = pack1 + $8 ;  # $8 is the size of the packet in bytes
         time1 = $2 ;  # $2 is the time at which the packet was received
     }
-    if ($1 == "r" && $3 == "_2_" && $4 == "AGT") {  # $1 is the type of the packet, $3 is the source node, and $4 is the packet type (AGT for application data packet)
+    if ($1 == "r" && $3 == "_2_" && $4 == "AGT") {  # $1 is the type of the packet, $3 is the destination node, and $4 is the packet type (AGT for Agent Trace)
         count2++ ;  # Increment the value of 'count2' by 1
         pack2 = pack2 + $8 ;  # $8 is the size of the packet in bytes
         time2 = $2 ;  # $2 is the time at which the packet was received
